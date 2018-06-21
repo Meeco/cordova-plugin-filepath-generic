@@ -1,4 +1,4 @@
-package com.hiddentao.cordova.filepath;
+package com.vascoferreira.cordova.filepath;
 
 
 import android.Manifest;
