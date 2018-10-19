@@ -11,6 +11,7 @@ import android.util.Log;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.ContactsContract;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -28,6 +29,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.List;
 import java.io.File;
+import java.util.Calendar;
+import java.io.ByteArrayInputStream;
 
 public class FilePath extends CordovaPlugin {
 
@@ -364,6 +367,9 @@ public class FilePath extends CordovaPlugin {
         }
         // MediaStore (and general)
         else if ("content".equalsIgnoreCase(uri.getScheme())) {
+            if (uri.toString().contains("contact") &&  uri.toString().endsWith("photo")) {
+                return getContactPhotoDriveFilePath(uri, context);
+            }
             return getDriveFilePath(uri,context);
         }
         // File
@@ -372,6 +378,42 @@ public class FilePath extends CordovaPlugin {
         }
 
         return null;
+    }
+
+    private static String getContactPhotoDriveFilePath(Uri uri,Context context){
+        Uri returnUri =uri;
+        Cursor returnCursor = context.getContentResolver().query(returnUri, new String[] {ContactsContract.Contacts.Photo.PHOTO}, null, null, null);
+        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        returnCursor.moveToFirst();
+        byte[] data = returnCursor.getBlob(0);
+        String name = "tempFile" + Calendar.getInstance().getTimeInMillis();
+        if (nameIndex>=0) {
+            name = (returnCursor.getString(nameIndex));
+        }
+        File   file = new File(context.getCacheDir(),name);
+        try {
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
+            FileOutputStream outputStream = new FileOutputStream(file);
+            int read = 0;
+            int maxBufferSize = 1 * 1024 * 1024;
+            int  bytesAvailable = inputStream.available();
+
+            //int bufferSize = 1024;
+            int bufferSize = Math.min(bytesAvailable, maxBufferSize);
+
+            final byte[] buffers = new byte[bufferSize];
+            while ((read = inputStream.read(buffers)) != -1) {
+                outputStream.write(buffers, 0, read);
+            }
+            Log.e("File Size","Size " + file.length());
+            inputStream.close();
+            outputStream.close();
+            Log.e("File Path","Path " + file.getPath());
+            Log.e("File Size","Size " + file.length());
+        }catch (Exception e){
+            Log.e("Exception",e.getMessage());
+        }
+        return  file.getPath();
     }
 
     private static String getDriveFilePath(Uri uri,Context context){
