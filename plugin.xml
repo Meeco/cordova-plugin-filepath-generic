@@ -24,8 +24,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     <description>Cordova filepath generic plugin</description>
     <license>Apache 2.0</license>
     <keywords>cordova,file</keywords>
-    <repo>https://github.com/vascoferreira/cordova-plugin-filepath-generic.git</repo>
-    <issue>https://github.com/vascoferreira/cordova-plugin-filepath-generic/issues</issue>
+    <repo>https://github.com/Meeco/cordova-plugin-filepath-generic.git</repo>
+    <issue>https://github.com/Meeco/cordova-plugin-filepath-generic/issues</issue>
 
     <engines>
         <engine name="cordova-android" version=">=3.1.0" /><!-- Uses CordovaResourceApi -->
@@ -39,7 +39,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="FilePath" >
-                <param name="android-package" value="com.vascoferreira.cordova.filepath.FilePath"/>
+                <param name="android-package" value="com.meeco.cordova.filepath.FilePath"/>
                 <param name="onload" value="true" />
             </feature>
         </config-file>
@@ -52,7 +52,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
         </config-file>
 
-        <source-file src="src/android/FilePath.java" target-dir="src/com/vascoferreira/cordova/filepath" />
+        <source-file src="src/android/FilePath.java" target-dir="src/com/meeco/cordova/filepath" />
+        <source-file src="src/android/FileUtils.java" target-dir="src/com/meeco/cordova/filepath" />
     </platform>
 
 </plugin>
